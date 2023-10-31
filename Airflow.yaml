@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-deployment
+  labels:
+    app: airflow
+spec:
+  replicas: 1 # Set the desired number of replicas
+  selector:
+    matchLabels:
+      app: airflow
+  template:
+    metadata:
+      labels:
+        app: airflow
+    spec:
+      containers:
+        - name: airflow
+          image: apache/airflow:2.1.0 # Replace with the desired Airflow image and version
+          ports:
+            - containerPort: 8080 # Replace with the port Airflow webserver listens on
+          env:
+            - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+              value: postgresql://<db_user>:<db_password>@<db_host>:<db_port>/<db_name> # Configure the database connection URL
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: CeleryExecutor # Use the desired executor (e.g., Celery, Local)
+            # Add other environment variables as needed
+          # Add volume mounts and other configuration as required
